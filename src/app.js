@@ -10,17 +10,14 @@ const app = express();
 app.use(morgan("dev"));
 app.use(helmet());
 app.use(compression());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 // init db
 require("./dbs/init.mongodb");
 const { checkOverload } = require("./helpers/check.connect");
 checkOverload();
 // init router
-app.get("/", (req, res, next) => {
-  const strCompress = "Hello";
-  return res.status(200).json({
-    message: "Welcome",
-  });
-});
+app.use("", require("./routers/index"));
 // handle errors
 
 module.exports = app;
