@@ -1,12 +1,22 @@
 const AccessService = require("../services/access.service");
 
-class AccessController {
-  signup = async (req, res, next) => {
-    const { name, email, password } = req.body;
-    const result = await AccessService.signup(name, email, password);
-    const statusCode = typeof result.code === "number" ? result.code : 400;
+const { OK, CREATED, SuccessResponse } = require("../core/success.response");
 
-    return res.status(statusCode).json(result);
+class AccessController {
+  login = async (req, res, next) => {
+    new SuccessResponse({
+      message: "Login OK",
+      metadata: await AccessService.login(req.body),
+    }).send(res);
+  };
+  signup = async (req, res, next) => {
+    new CREATED({
+      message: "Registered OK",
+      metadata: await AccessService.signup(req.body),
+      options: {
+        limit: 10,
+      },
+    }).send(res);
   };
 }
 
